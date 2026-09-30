@@ -1,22 +1,81 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalle del Libro</title>
+    <title>Bibliotech - {{ libro.titulo }}</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 </head>
-<body>
-    <h1>Detalle del Libro</h1>
-    <p>ISBN: {{ libro.isbn }}</p>
-    <p>Título: {{ libro.titulo }}</p>
-    <p>Autor: {{ libro.autor }}</p>
-    <p>Categoría: {{ libro.categoria }}</p>
-    <p>Precio: {{ libro.precio_prestamo }}</p>
-    <p>Disponibilidad: {{ libro.disponible }}</p>
-    <p>Stock: {{ libro.stock_copias }}</p>
 
-    <a href="{% url 'lista_libros' %}">Volver a la lista de libros</a>
-    <a href="{% url 'agregar_libro' %}">Agregar un nuevo libro</a>
+<body class="bg-light min-vh-100 d-flex align-items-center py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-lg-6">
+                <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+                    <div class="card-header bg-primary text-white text-center py-4">
+                        <span class="badge bg-light text-primary mb-2 px-3 py-2 rounded-pill fw-bold text-uppercase">
+                            {{ libro.get_categoria_display }}
+                        </span>
+                        <h1 class="card-title h3 fw-bold mb-0">{{ libro.titulo }}</h1>
+                        <p class="card-subtitle text-white-50 mt-1 fs-6">Por {{ libro.autor }}</p>
+                    </div>
 
+                    <div class="card-body p-4 p-md-5">
+                        <ul class="list-group list-group-flush mb-4">
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-3">
+                                <span class="text-muted"><i class="bi bi-upc-scan me-2"></i>ISBN</span>
+                                <span class="fw-semibold text-dark">{{ libro.isbn }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-3">
+                                <span class="text-muted"><i class="bi bi-currency-dollar me-2"></i>Precio
+                                    Préstamo</span>
+                                <span class="fw-bold text-success fs-5">${{ libro.precio_prestamo }} CLP</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-3">
+                                <span class="text-muted"><i class="bi bi-box-seam me-2"></i>Copias Disponibles</span>
+                                <span class="fw-semibold text-dark">{{ libro.stock_copias }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-3">
+                                <span class="text-muted"><i class="bi bi-calendar-date me-2"></i>Fecha de
+                                    Publicación</span>
+                                <span class="fw-semibold text-dark">{{ libro.fecha_publicacion|date:"d/m/Y" }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-3">
+                                <span class="text-muted"><i class="bi bi-info-circle me-2"></i>Estado</span>
+                                {% if libro.disponible and libro.stock_copias > 0 %}
+                                <span
+                                    class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-2">
+                                    <i class="bi bi-check-circle-fill me-1"></i>Disponible
+                                </span>
+                                {% else %}
+                                <span
+                                    class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-3 py-2">
+                                    <i class="bi bi-x-circle-fill me-1"></i>No Disponible
+                                </span>
+                                {% endif %}
+                            </li>
+                        </ul>
+
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'lista_libros' %}" class="btn btn-outline-primary btn-lg rounded-3">
+                                <i class="bi bi-arrow-left me-2"></i>Volver a la lista
+                            </a>
+                            <a href="{% url 'agregar_libro' %}" class="btn btn-primary btn-lg rounded-3">
+                                <i class="bi bi-plus-circle me-2"></i>Agregar nuevo libro
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
