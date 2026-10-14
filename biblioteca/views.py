@@ -3,15 +3,17 @@ from .models import Libro, Categoria
 from .forms import LibroForm
 
 def lista_libros(request):
-    libros = Libro.objects.all()
+    libros = Libro.objects.all().select_related('categoria')
+    categorias = Categoria.objects.all()
     
     contexto = {
         'libros': libros,
         'disponibles': [libro for libro in libros if libro.disponible],
-        'total_libros': libros.count()
+        'total_libros': libros.count(),
+        'categorias': categorias,
     }
 
-    return render(request, 'lista_libros.html', contexto)
+    return render(request, 'templates_con_ia/lista_libros.html', contexto)
 
 
 def detalle_libro(request, id):
@@ -19,7 +21,7 @@ def detalle_libro(request, id):
     contexto = {
         'libro': libro
     }
-    return render(request, 'detalle_libro.html', contexto)
+    return render(request, 'templates_con_ia/detalle_libro.html', contexto)
 
 
 def libros_por_categoria(request, id=None, cat=None):
@@ -30,10 +32,10 @@ def libros_por_categoria(request, id=None, cat=None):
     
     contexto = {
         'libros': libros,
-        'categoria': cat,
+        'categoria': categoria,
         'total_libros': libros.count()
     }
-    return render(request, 'libros_por_categoria.html', contexto)
+    return render(request, 'templates_con_ia/libros_por_categoria.html', contexto)
 
 def agregar_libro(request):
     if request.method == 'POST':
@@ -47,4 +49,7 @@ def agregar_libro(request):
     contexto = {
         'form': form
     }
-    return render(request, 'agregar_libro.html', contexto)
+    return render(request, 'templates_con_ia/agregar_libro.html', contexto)
+
+def base(request):
+    return render(request, 'templates_con_ia/base.html')

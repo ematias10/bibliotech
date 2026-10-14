@@ -1,0 +1,112 @@
+{% extends "templates_con_ia/base.html" %}
+
+{% block title %}Categoría: {{ categoria.nombre }} - Bibliotech{% endblock %}
+
+{% block content %}
+<div class="container py-2">
+
+    <!-- Navegación Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'lista_libros' %}" class="text-decoration-none">Catálogo</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ categoria.nombre }}</li>
+        </ol>
+    </nav>
+
+    <!-- Encabezado de la Categoria -->
+    <div class="bg-white border rounded-4 p-4 p-md-5 mb-4 shadow-sm">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
+            <div>
+                <span class="badge badge-category px-3 py-2 rounded-pill mb-2">
+                    <i class="bi bi-tag-fill me-1"></i>Categoría Literaria
+                </span>
+                <h1 class="display-6 fw-bold text-primary-emphasis mb-2">{{ categoria.nombre }}</h1>
+                {% if categoria.descripcion %}
+                <p class="text-muted mb-0 lead fs-6">{{ categoria.descripcion }}</p>
+                {% else %}
+                <p class="text-muted mb-0">Mostrando libros pertenecientes al género o sección de {{ categoria.nombre }}.</p>
+                {% endif %}
+            </div>
+
+            <div class="d-flex align-items-center gap-3">
+                <div class="text-center bg-light border rounded-3 px-3 py-2">
+                    <span class="d-block small text-muted">Libros en Categoría</span>
+                    <strong class="fs-4 text-primary">{{ total_libros }}</strong>
+                </div>
+                <a href="{% url 'lista_libros' %}" class="btn btn-outline-primary rounded-3 px-3 py-2">
+                    <i class="bi bi-arrow-left me-1"></i>Todos los Libros
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grid de Libros Filtrados -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
+        {% for libro in libros %}
+        <div class="col">
+            <article class="card h-100 shadow-sm border-0 book-card">
+                <div class="book-cover-header">
+                    <i class="bi bi-book-half book-cover-icon"></i>
+                    <span class="position-absolute top-0 end-0 m-2 badge {% if libro.disponible and libro.stock_copias > 0 %}badge-available{% else %}badge-unavailable{% endif %} px-2 py-1 rounded-pill">
+                        {% if libro.disponible and libro.stock_copias > 0 %}
+                            <i class="bi bi-check-circle-fill me-1"></i>Disponible
+                        {% else %}
+                            <i class="bi bi-x-circle-fill me-1"></i>Agotado
+                        {% endif %}
+                    </span>
+                </div>
+
+                <div class="card-body d-flex flex-column p-4">
+                    <span class="badge badge-category align-self-start mb-2 px-2 py-1 rounded-pill">
+                        <i class="bi bi-tag me-1"></i>{{ categoria.nombre }}
+                    </span>
+
+                    <h2 class="card-title h5 fw-bold mb-1 text-truncate" title="{{ libro.titulo }}">{{ libro.titulo }}</h2>
+                    <p class="card-subtitle text-muted small mb-3">
+                        <i class="bi bi-person me-1"></i>{{ libro.autor }}
+                    </p>
+
+                    <ul class="list-unstyled small mb-4 mt-auto">
+                        <li class="d-flex justify-content-between py-1 border-bottom border-light-subtle">
+                            <span class="text-muted"><i class="bi bi-upc-scan me-1"></i>ISBN:</span>
+                            <span class="font-monospace text-secondary">{{ libro.isbn }}</span>
+                        </li>
+                        <li class="d-flex justify-content-between py-1 border-bottom border-light-subtle">
+                            <span class="text-muted"><i class="bi bi-box-seam me-1"></i>Stock:</span>
+                            <span class="fw-semibold">{{ libro.stock_copias }} copias</span>
+                        </li>
+                        <li class="d-flex justify-content-between py-1 pt-2">
+                            <span class="text-muted"><i class="bi bi-coin me-1"></i>Préstamo:</span>
+                            <span class="fw-bold text-success">${{ libro.precio_prestamo }} CLP</span>
+                        </li>
+                    </ul>
+
+                    <a href="{% url 'detalle_libro' libro.id %}" class="btn btn-outline-primary w-100 rounded-3 mt-auto">
+                        <i class="bi bi-eye me-1"></i>Ver Detalles
+                    </a>
+                </div>
+            </article>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="card border-0 shadow-sm p-5 text-center">
+                <div class="mb-3">
+                    <i class="bi bi-folder2-open text-muted" style="font-size: 3.5rem;"></i>
+                </div>
+                <h3 class="h4 text-secondary mb-2">No hay libros en esta categoría</h3>
+                <p class="text-muted mb-4">No se han registrado títulos bajo la categoría "{{ categoria.nombre }}".</p>
+                <div class="d-flex justify-content-center gap-2">
+                    <a href="{% url 'lista_libros' %}" class="btn btn-outline-primary px-3 py-2 rounded-3">
+                        <i class="bi bi-arrow-left me-1"></i>Volver al Catálogo
+                    </a>
+                    <a href="{% url 'agregar_libro' %}" class="btn btn-primary px-3 py-2 rounded-3">
+                        <i class="bi bi-plus-lg me-1"></i>Agregar Libro
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

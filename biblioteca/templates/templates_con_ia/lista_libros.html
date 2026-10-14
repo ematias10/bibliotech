@@ -1,0 +1,125 @@
+{% extends "templates_con_ia/base.html" %}
+
+{% block title %}Catálogo de Libros - Bibliotech{% endblock %}
+
+{% block content %}
+<div class="container py-2">
+
+    <!-- Header y Estadisticas -->
+    <div class="row align-items-center mb-4 g-3">
+        <div class="col-lg-7">
+            <span class="badge bg-secondary-custom text-white px-3 py-1 rounded-pill mb-2">Colección Literaria</span>
+            <h1 class="display-6 fw-bold mb-1 text-primary-emphasis">Catálogo de Libros</h1>
+            <p class="text-muted mb-0">Explora todos los títulos disponibles para préstamo y lectura académica.</p>
+        </div>
+        <div class="col-lg-5">
+            <div class="d-flex justify-content-lg-end gap-2 flex-wrap">
+                <div class="bg-white border rounded-3 px-3 py-2 text-center shadow-sm">
+                    <span class="d-block small text-muted">Total Libros</span>
+                    <strong class="fs-5 text-primary">{{ total_libros }}</strong>
+                </div>
+                <div class="bg-white border rounded-3 px-3 py-2 text-center shadow-sm">
+                    <span class="d-block small text-muted">Disponibles</span>
+                    <strong class="fs-5 text-success">{{ disponibles|length }}</strong>
+                </div>
+                <a href="{% url 'agregar_libro' %}" class="btn btn-primary d-inline-flex align-items-center gap-2 px-3 py-2 shadow-sm rounded-3">
+                    <i class="bi bi-plus-lg"></i>
+                    <span>Nuevo Libro</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtro de Categorias (si estan disponibles en el contexto) -->
+    {% if categorias %}
+    <div class="mb-4">
+        <div class="d-flex align-items-center gap-2 flex-wrap bg-white p-3 rounded-3 shadow-sm border">
+            <span class="text-muted small fw-semibold me-2"><i class="bi bi-funnel me-1"></i>Filtrar por:</span>
+            <a href="{% url 'lista_libros' %}" class="badge text-bg-primary text-decoration-none px-3 py-2 rounded-pill">
+                Todos
+            </a>
+            {% for cat in categorias %}
+            <a href="{% url 'libros_por_categoria' cat.id %}" class="badge bg-light text-dark border text-decoration-none px-3 py-2 rounded-pill hover-shadow">
+                {{ cat.nombre }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Grid de Libros -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
+        {% for libro in libros %}
+        <div class="col">
+            <article class="card h-100 shadow-sm border-0 book-card">
+                <!-- Portada de Libro con Estilo Moderno Clasico -->
+                <div class="book-cover-header">
+                    <i class="bi bi-book-half book-cover-icon"></i>
+                    <span class="position-absolute top-0 end-0 m-2 badge {% if libro.disponible and libro.stock_copias > 0 %}badge-available{% else %}badge-unavailable{% endif %} px-2 py-1 rounded-pill">
+                        {% if libro.disponible and libro.stock_copias > 0 %}
+                            <i class="bi bi-check-circle-fill me-1"></i>Disponible
+                        {% else %}
+                            <i class="bi bi-x-circle-fill me-1"></i>Agotado
+                        {% endif %}
+                    </span>
+                </div>
+
+                <div class="card-body d-flex flex-column p-4">
+                    <!-- Categoria Badge -->
+                    {% if libro.categoria %}
+                    <div class="mb-2">
+                        <a href="{% url 'libros_por_categoria' libro.categoria.id %}" class="badge badge-category text-decoration-none px-2 py-1 rounded-pill">
+                            <i class="bi bi-tag me-1"></i>{{ libro.categoria.nombre }}
+                        </a>
+                    </div>
+                    {% endif %}
+
+                    <!-- Titulo y Autor -->
+                    <h2 class="card-title h5 fw-bold mb-1 text-truncate" title="{{ libro.titulo }}">{{ libro.titulo }}</h2>
+                    <p class="card-subtitle text-muted small mb-3">
+                        <i class="bi bi-person me-1"></i>{{ libro.autor }}
+                    </p>
+
+                    <!-- Lista de Metadatos -->
+                    <ul class="list-unstyled small mb-4 mt-auto">
+                        <li class="d-flex justify-content-between py-1 border-bottom border-light-subtle">
+                            <span class="text-muted"><i class="bi bi-upc-scan me-1"></i>ISBN:</span>
+                            <span class="font-monospace text-secondary">{{ libro.isbn }}</span>
+                        </li>
+                        <li class="d-flex justify-content-between py-1 border-bottom border-light-subtle">
+                            <span class="text-muted"><i class="bi bi-box-seam me-1"></i>Stock:</span>
+                            <span class="fw-semibold">{{ libro.stock_copias }} copias</span>
+                        </li>
+                        <li class="d-flex justify-content-between py-1 pt-2">
+                            <span class="text-muted"><i class="bi bi-coin me-1"></i>Préstamo:</span>
+                            <span class="fw-bold text-success">${{ libro.precio_prestamo }} CLP</span>
+                        </li>
+                    </ul>
+
+                    <!-- Boton de Accion -->
+                    <a href="{% url 'detalle_libro' libro.id %}" class="btn btn-outline-primary w-100 rounded-3 mt-auto">
+                        <i class="bi bi-eye me-1"></i>Ver Detalles
+                    </a>
+                </div>
+            </article>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="card border-0 shadow-sm p-5 text-center">
+                <div class="mb-3">
+                    <i class="bi bi-journal-x text-muted" style="font-size: 3.5rem;"></i>
+                </div>
+                <h3 class="h4 text-secondary mb-2">No hay libros registrados</h3>
+                <p class="text-muted mb-4">Aún no se han agregado libros al catálogo de la biblioteca.</p>
+                <div>
+                    <a href="{% url 'agregar_libro' %}" class="btn btn-primary px-4 py-2 rounded-3">
+                        <i class="bi bi-plus-lg me-1"></i>Agregar el primer libro
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

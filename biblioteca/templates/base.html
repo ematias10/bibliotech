@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Bibliotech</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Pricing</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main style="background-color: red;">
+        {% block title %}
+        <h1>PLANTILLA BASE</h1>
+        {% endblock %}
+
+        {% block content %}
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus doloremque vel explicabo unde at minus et
+            similique, voluptate porro in, odit quaerat amet. Est laborum doloremque quidem amet deleniti. Assumenda.
+        </p>
+        {% endblock %}
+    </main>
+
+    <footer class="bg-dark text-white text-center py-3">
+        <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+            <p class="mb-0">&copy; 2026 Bibliotech. Todos los derechos reservados.</p>
+            <a href="{% url 'admin:index' %}" class="btn btn-outline-light btn-sm rounded-pill px-3 py-1 d-inline-flex align-items-center gap-2">
+                <i class="bi bi-person-circle"></i>
+                <span>Panel Admin</span>
+            </a>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

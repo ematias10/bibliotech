@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{%block title %}
+<h1>CATALOGO DE LIBROS</h1>
+{% endblock %}
+
+{% block content %}
+{% for libro in libros %}
+<p>📕 {{ libro.titulo }}</p>
+{% endfor %}
+{% endblock %}

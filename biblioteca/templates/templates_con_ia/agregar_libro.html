@@ -1,0 +1,173 @@
+{% extends "templates_con_ia/base.html" %}
+
+{% block title %}Agregar Nuevo Libro - Bibliotech{% endblock %}
+
+{% block content %}
+<div class="container py-2">
+
+    <!-- Navegación Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'lista_libros' %}" class="text-decoration-none">Catálogo</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Agregar Libro</li>
+        </ol>
+    </nav>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-xl-7">
+            <div class="card shadow border-0 rounded-4 overflow-hidden bg-white">
+                <!-- Header de la tarjeta -->
+                <div class="card-header bg-primary text-white p-4 text-center">
+                    <div class="d-inline-flex align-items-center justify-content-center bg-white bg-opacity-10 rounded-circle p-3 mb-2">
+                        <i class="bi bi-book-half fs-2 text-warning"></i>
+                    </div>
+                    <h1 class="h3 fw-bold mb-1">Registrar Nuevo Libro</h1>
+                    <p class="text-white-50 mb-0 small">Completa la ficha técnica para incorporar el título al inventario.</p>
+                </div>
+
+                <!-- Formulario -->
+                <div class="card-body p-4 p-md-5">
+                    
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                        {% for error in form.non_field_errors %}
+                            <p class="mb-0"><i class="bi bi-exclamation-triangle-fill me-2"></i>{{ error }}</p>
+                        {% endfor %}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endif %}
+
+                    <form method="POST" novalidate>
+                        {% csrf_token %}
+
+                        <!-- Título -->
+                        <div class="mb-3">
+                            <label for="{{ form.titulo.id_for_label }}" class="form-label fw-semibold text-secondary">
+                                <i class="bi bi-fonts me-1"></i>{{ form.titulo.label }}
+                            </label>
+                            {{ form.titulo }}
+                            {% if form.titulo.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ form.titulo.errors|striptags }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Autor e ISBN en 2 columnas -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-7">
+                                <label for="{{ form.autor.id_for_label }}" class="form-label fw-semibold text-secondary">
+                                    <i class="bi bi-person me-1"></i>{{ form.autor.label }}
+                                </label>
+                                {{ form.autor }}
+                                {% if form.autor.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ form.autor.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-5">
+                                <label for="{{ form.isbn.id_for_label }}" class="form-label fw-semibold text-secondary">
+                                    <i class="bi bi-upc-scan me-1"></i>{{ form.isbn.label }}
+                                </label>
+                                {{ form.isbn }}
+                                {% if form.isbn.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ form.isbn.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Categoría y Fecha de Publicación -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label for="{{ form.categoria.id_for_label }}" class="form-label fw-semibold text-secondary">
+                                    <i class="bi bi-tag me-1"></i>Categoría
+                                </label>
+                                {{ form.categoria }}
+                                {% if form.categoria.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ form.categoria.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.fecha_publicacion.id_for_label }}" class="form-label fw-semibold text-secondary">
+                                    <i class="bi bi-calendar-date me-1"></i>{{ form.fecha_publicacion.label }}
+                                </label>
+                                {{ form.fecha_publicacion }}
+                                {% if form.fecha_publicacion.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ form.fecha_publicacion.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Precio Préstamo y Copias Stock -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label for="{{ form.precio_prestamo.id_for_label }}" class="form-label fw-semibold text-secondary">
+                                    <i class="bi bi-cash-stack me-1"></i>{{ form.precio_prestamo.label }}
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    {{ form.precio_prestamo }}
+                                    <span class="input-group-text">CLP</span>
+                                </div>
+                                {% if form.precio_prestamo.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ form.precio_prestamo.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.stock_copias.id_for_label }}" class="form-label fw-semibold text-secondary">
+                                    <i class="bi bi-box-seam me-1"></i>{{ form.stock_copias.label }}
+                                </label>
+                                {{ form.stock_copias }}
+                                {% if form.stock_copias.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ form.stock_copias.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Disponibilidad Checkbox -->
+                        <div class="mb-4 p-3 bg-light rounded-3 border">
+                            <div class="form-check form-switch mb-0">
+                                {{ form.disponible }}
+                                <label class="form-check-label fw-semibold ms-2" for="{{ form.disponible.id_for_label }}">
+                                    Libro disponible para préstamo inmediato
+                                </label>
+                            </div>
+                            <small class="text-muted d-block mt-1 ms-4">
+                                Desmarca esta casilla si el libro se encuentra en mantenimiento o restauración.
+                            </small>
+                            {% if form.disponible.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ form.disponible.errors|striptags }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Botones de Acción -->
+                        <div class="d-flex justify-content-end gap-2 pt-2 border-top">
+                            <a href="{% url 'lista_libros' %}" class="btn btn-outline-secondary px-4 py-2 rounded-3">
+                                <i class="bi bi-x-circle me-1"></i>Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary px-4 py-2 rounded-3 shadow-sm">
+                                <i class="bi bi-check2-circle me-1"></i>Guardar Libro
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
