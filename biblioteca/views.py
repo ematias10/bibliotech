@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Libro
+from .models import Libro, Categoria
 from .forms import LibroForm
 
 def lista_libros(request):
@@ -7,7 +7,6 @@ def lista_libros(request):
     
     contexto = {
         'libros': libros,
-        'categorias': [c[0] for c in Libro.CATEGORIAS],
         'disponibles': [libro for libro in libros if libro.disponible],
         'total_libros': libros.count()
     }
@@ -22,8 +21,13 @@ def detalle_libro(request, id):
     }
     return render(request, 'detalle_libro.html', contexto)
 
-def libros_por_categoria(request, cat):
-    libros = Libro.objects.filter(categoria=cat)
+
+def libros_por_categoria(request, id=None, cat=None):
+    # Soporta tanto argumento 'id' como 'cat' para compatibilidad con urls
+    cat_id = id if id is not None else cat
+    categoria = get_object_or_404(Categoria, id=cat_id)
+    libros = Libro.objects.filter(categoria=categoria).select_related('categoria')
+    
     contexto = {
         'libros': libros,
         'categoria': cat,
