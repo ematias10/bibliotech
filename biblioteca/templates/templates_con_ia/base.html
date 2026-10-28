@@ -208,6 +208,22 @@
 
                 <div class="collapse navbar-collapse" id="navbarBibliotech">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3">
+                    {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <span class="nav-link text-light me-3"><i class="bi bi-person-circle"></i> {{ user.username }}</span>
+                    </li>
+                    <li class="nav-item">
+                        <form action="{% url 'logout' %}" method="post" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-light btn-sm">Cerrar Sesión</button>
+                        </form>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="btn btn-outline-light btn-sm" href="{% url 'login' %}">Iniciar Sesión</a>
+                    </li>
+                    {% endif %}
+
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'lista_libros' %}">
                                 <i class="bi bi-book me-1"></i> Catálogo
@@ -219,12 +235,13 @@
                             </a>
                         </li>
                     </ul>
-
+                    {% if user.is_authenticated %}
                     <div class="d-flex align-items-center gap-2">
                         <a href="{% url 'agregar_libro' %}" class="btn btn-secondary-custom btn-sm px-3 py-2 rounded-pill shadow-sm">
                             <i class="bi bi-bookmark-plus me-1"></i> Nuevo Registro
                         </a>
                     </div>
+                    {% endif %}
                 </div>
             </div>
         </nav>
