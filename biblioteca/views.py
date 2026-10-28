@@ -3,6 +3,7 @@ from .models import Libro, Categoria
 from .forms import LibroForm
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 class LibroListView(ListView):
     model = Libro
@@ -29,7 +30,7 @@ class LibroDetailView(DetailView):
     template_name = 'templates_con_ia/detalle_libro.html'
     context_object_name = 'libro'
 
-class LibroCreateView(CreateView):
+class LibroCreateView(LoginRequiredMixin, CreateView):
     model = Libro
     form_class = LibroForm
     template_name = 'templates_con_ia/agregar_libro.html'
@@ -38,7 +39,7 @@ class LibroCreateView(CreateView):
     def form_valid(self, form):
         return super().form_valid(form)
 
-class LibroUpdateView(UpdateView):
+class LibroUpdateView(LoginRequiredMixin, UpdateView):
     model = Libro
     form_class = LibroForm
     template_name = 'templates_con_ia/editar_libro.html'
@@ -47,7 +48,7 @@ class LibroUpdateView(UpdateView):
     def form_valid(self, form):
         return super().form_valid(form)
 
-class LibroDeleteView(DeleteView):
+class LibroDeleteView(LoginRequiredMixin, DeleteView):
     model = Libro
     template_name = 'templates_con_ia/eliminar_libro.html'
     success_url = '/lista_libros/'

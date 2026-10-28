@@ -22,10 +22,12 @@
                     <span class="d-block small text-muted">Disponibles</span>
                     <strong class="fs-5 text-success">{{ disponibles|length }}</strong>
                 </div>
+                {% if user.is_authenticated %}
                 <a href="{% url 'agregar_libro' %}" class="btn btn-primary d-inline-flex align-items-center gap-2 px-3 py-2 shadow-sm rounded-3">
                     <i class="bi bi-plus-lg"></i>
                     <span>Nuevo Libro</span>
                 </a>
+                {% endif %}
             </div>
         </div>
     </div>
