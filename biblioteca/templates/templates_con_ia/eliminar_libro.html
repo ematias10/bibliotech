@@ -1,0 +1,129 @@
+{% extends "templates_con_ia/base.html" %}
+
+{% block title %}Eliminar Libro: {{ libro.titulo }} - Bibliotech{% endblock %}
+
+{% block content %}
+<div class="container py-2">
+
+    <!-- Navegación Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{% url 'lista_libros' %}" class="text-decoration-none">
+                    <i class="bi bi-book me-1"></i>Catálogo
+                </a>
+            </li>
+            {% if libro.categoria %}
+            <li class="breadcrumb-item">
+                <a href="{% url 'libros_por_categoria' libro.categoria.id %}" class="text-decoration-none">
+                    {{ libro.categoria.nombre }}
+                </a>
+            </li>
+            {% endif %}
+            <li class="breadcrumb-item">
+                <a href="{% url 'detalle_libro' libro.id %}" class="text-decoration-none text-truncate d-inline-block align-bottom" style="max-width: 200px;">
+                    {{ libro.titulo }}
+                </a>
+            </li>
+            <li class="breadcrumb-item active text-danger fw-semibold" aria-current="page">Eliminar</li>
+        </ol>
+    </nav>
+
+    <!-- Tarjeta de Confirmación de Eliminación -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-xl-7">
+            <div class="card shadow-lg border-0 rounded-4 overflow-hidden bg-white">
+                
+                <!-- Encabezado de Advertencia (Rojo / Danger) -->
+                <div class="card-header bg-danger text-white p-4 text-center">
+                    <div class="d-inline-flex align-items-center justify-content-center bg-white bg-opacity-20 rounded-circle p-3 mb-2 shadow-sm">
+                        <i class="bi bi-exclamation-triangle-fill fs-1 text-white"></i>
+                    </div>
+                    <h1 class="h3 fw-bold mb-1">Confirmar Eliminación</h1>
+                    <p class="text-white-50 mb-0 small">Esta acción es irreversible y eliminará el registro de la base de datos.</p>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    
+                    <!-- Alerta de Advertencia -->
+                    <div class="alert alert-warning border-warning-subtle d-flex align-items-center gap-3 p-3 rounded-3 mb-4" role="alert">
+                        <i class="bi bi-shield-exclamation fs-2 text-warning flex-shrink-0"></i>
+                        <div>
+                            <strong class="d-block text-dark">¿Estás seguro de que deseas eliminar este libro?</strong>
+                            <small class="text-secondary">
+                                Se removerá permanentemente del catálogo de la biblioteca, inventario y registros de préstamo.
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- Ficha Resumen del Libro a Eliminar -->
+                    <div class="border rounded-4 p-4 mb-4 bg-light">
+                        <div class="row align-items-center g-3">
+                            <div class="col-auto">
+                                <div class="rounded-3 p-3 text-white text-center d-flex align-items-center justify-content-center shadow-sm"
+                                     style="width: 70px; height: 90px; background: linear-gradient(135deg, #1E3A8A 0%, #1e293b 100%);">
+                                    <i class="bi bi-book-half fs-2"></i>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                                    {% if libro.categoria %}
+                                    <span class="badge badge-category px-2 py-1 rounded-pill small">
+                                        <i class="bi bi-tag me-1"></i>{{ libro.categoria.nombre }}
+                                    </span>
+                                    {% endif %}
+                                    <span class="badge {% if libro.disponible and libro.stock_copias > 0 %}badge-available{% else %}badge-unavailable{% endif %} px-2 py-1 rounded-pill small">
+                                        {% if libro.disponible and libro.stock_copias > 0 %}Disponible{% else %}No disponible{% endif %}
+                                    </span>
+                                </div>
+                                <h2 class="h5 fw-bold text-dark mb-1 font-serif">{{ libro.titulo }}</h2>
+                                <p class="text-muted small mb-0">
+                                    <i class="bi bi-pen me-1"></i>Autor: <strong class="text-dark">{{ libro.autor }}</strong>
+                                </p>
+                            </div>
+                        </div>
+
+                        <hr class="my-3 text-secondary-subtle">
+
+                        <!-- Detalles rápidos -->
+                        <div class="row g-2 text-center text-sm-start small">
+                            <div class="col-6 col-sm-3">
+                                <span class="text-muted d-block">ISBN</span>
+                                <span class="font-monospace fw-semibold">{{ libro.isbn }}</span>
+                            </div>
+                            <div class="col-6 col-sm-3">
+                                <span class="text-muted d-block">Stock</span>
+                                <span class="fw-semibold">{{ libro.stock_copias }} copias</span>
+                            </div>
+                            <div class="col-6 col-sm-3">
+                                <span class="text-muted d-block">Préstamo</span>
+                                <span class="fw-bold text-success">${{ libro.precio_prestamo }} CLP</span>
+                            </div>
+                            <div class="col-6 col-sm-3">
+                                <span class="text-muted d-block">Publicación</span>
+                                <span class="fw-semibold">{{ libro.fecha_publicacion|date:"Y"|default:"N/A" }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Formulario de Confirmación POST de DeleteView -->
+                    <form method="POST" class="mt-4">
+                        {% csrf_token %}
+                        <div class="d-flex flex-column flex-sm-row justify-content-end align-items-stretch align-items-sm-center gap-2 pt-2 border-top">
+                            <a href="{% url 'detalle_libro' libro.id %}" class="btn btn-outline-secondary px-4 py-2 rounded-3 text-center">
+                                <i class="bi bi-x-circle me-1"></i>Cancelar y Volver
+                            </a>
+                            <button type="submit" class="btn btn-danger px-4 py-2 rounded-3 shadow-sm fw-semibold text-center">
+                                <i class="bi bi-trash3-fill me-1"></i>Sí, Eliminar Permanentemente
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+

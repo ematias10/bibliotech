@@ -4,6 +4,7 @@ from .forms import LibroForm
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
 
 class LibroListView(ListView):
     model = Libro
@@ -34,7 +35,7 @@ class LibroCreateView(LoginRequiredMixin, CreateView):
     model = Libro
     form_class = LibroForm
     template_name = 'templates_con_ia/agregar_libro.html'
-    success_url = '/lista_libros/'
+    success_url = reverse_lazy('lista_libros')
 
     def form_valid(self, form):
         return super().form_valid(form)
@@ -43,7 +44,7 @@ class LibroUpdateView(LoginRequiredMixin, UpdateView):
     model = Libro
     form_class = LibroForm
     template_name = 'templates_con_ia/editar_libro.html'
-    success_url = '/lista_libros/'
+    success_url = reverse_lazy('lista_libros')
 
     def form_valid(self, form):
         return super().form_valid(form)
@@ -51,7 +52,7 @@ class LibroUpdateView(LoginRequiredMixin, UpdateView):
 class LibroDeleteView(LoginRequiredMixin, DeleteView):
     model = Libro
     template_name = 'templates_con_ia/eliminar_libro.html'
-    success_url = '/lista_libros/'
+    success_url = reverse_lazy('lista_libros')
 
 def lista_libros(request):
     libros = Libro.objects.all().select_related('categoria')
